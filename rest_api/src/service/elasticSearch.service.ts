@@ -24,7 +24,7 @@ class ElasticsearchService {
       return true;
     } catch (error) {
       console.error('Elasticsearch ping failed:', error);
-      return false;
+      return false; 
     }
   }
 
