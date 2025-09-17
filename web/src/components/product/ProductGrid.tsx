@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
-import ProductCard from "./ProductCard";
+import ProductCard from "../common/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 interface Product {
-  id: string;
+  _id?: string;
+  id?: string;
   name: string;
   price: number;
   originalPrice?: number;
@@ -69,7 +70,7 @@ const ProductGrid = ({ minPrice, minStart }: { minPrice?: number; minStart?: num
         >
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {products.map((product) => (
-              <ProductCard key={product.id} {...product} />
+              <ProductCard key={product._id} {...product} id={product._id} />
             ))}
           </div>
         </InfiniteScroll>

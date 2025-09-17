@@ -1,6 +1,7 @@
 import { Heart, Star, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
 interface ProductCardProps {
   id: string;
@@ -14,6 +15,7 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ 
+  id,
   name, 
   price, 
   originalPrice, 
@@ -27,6 +29,11 @@ const ProductCard = ({
       style: 'currency',
       currency: 'VND'
     }).format(price);
+  };
+
+  const navigate = useNavigate();
+  const handleClick = (id) => {
+    navigate(`/products/${id}`);
   };
 
   return (
@@ -78,7 +85,9 @@ const ProductCard = ({
               </div>
             )}
           </div>
-          <Button size="icon" className="bg-gradient-primary hover:opacity-90 shadow-primary">
+          <Button size="icon" className="bg-gradient-primary hover:opacity-90 shadow-primary"
+            onClick={() => handleClick(id)}
+          >
             <ShoppingCart className="h-4 w-4" />
           </Button>
         </div>

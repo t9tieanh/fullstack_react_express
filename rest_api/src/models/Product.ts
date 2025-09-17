@@ -1,5 +1,6 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Schema, Types } from "mongoose";
 import 'dotenv/config';
+import { IUser } from "./User";
 
 
 export interface IProduct extends Document {
@@ -10,6 +11,12 @@ export interface IProduct extends Document {
   rating: number;
   sold: number;
   discount?: number;
+  comments?: {
+    user: Types.ObjectId | IUser;
+    content: string;
+    rating: number;
+    createdAt: Date;
+  }[];
 }
 
 const ProductSchema: Schema = new Schema(
@@ -20,7 +27,15 @@ const ProductSchema: Schema = new Schema(
     image: { type: String, required: true },
     rating: { type: Number, default: 0 },
     sold: { type: Number, default: 0 },
-    discount: { type: Number }
+    discount: { type: Number },
+    comments: [
+      {
+        user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+        content: { type: String, required: true },
+        rating: { type: Number, required: true },
+        createdAt: { type: Date, default: Date.now }
+      }
+    ],
   },
   { timestamps: true }
 );

@@ -5,6 +5,7 @@ import { connectDB } from './config/db';
 import authRoutes from './routes/auth.routes';
 import productRoutes from './routes/product.routes';
 import { errorHandlingMiddleware } from './middleware/error-handler.midleware'
+import commentRoutes from './routes/comment.routes';
 
 const app = express();
 app.use(cors());
@@ -14,6 +15,7 @@ app.get('/health', (_req, res) => res.json({ ok: true }));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/comments', commentRoutes);
 
 app.use(errorHandlingMiddleware);
 

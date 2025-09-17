@@ -1,6 +1,8 @@
 import { IProduct } from '../models/Product';
 import elasticsearchService from './elasticSearch.service';
 import Product from '../models/Product';
+import FavoriteProduct from '../models/FavoriteProduct';
+import ApiError from '../middleware/ApiError';
 
 class ProductService {
 
@@ -52,6 +54,38 @@ class ProductService {
 
     await elasticsearchService.index('products', newProduct.id.toString(), productData);
     return newProduct;
+  }
+
+  async getProductDetail (productId: string): Promise<IProduct | null> {
+    return Product.findById(productId)
+      .populate({
+        path: 'comments.user',
+        select: 'name email'
+      });
+  }
+
+  async addToFavorites(userId: string, productId: string): Promise<void> {
+    try {
+      const product = await Product.findById(productId);
+      if (!product) {
+        throw new Error('Product not found');
+      }
+
+      const existingFavorite = await FavoriteProduct.findOne({ user: userId, product: productId });
+      if (existingFavorite) {
+        throw new Error('Product already in favorites');
+      }
+
+      const favorite = new FavoriteProduct({ user: userId, product: productId });
+      await favorite.save();
+    } catch (error: any) {
+      throw new ApiError(error.statusCode || 500, `Có lỗi trong quá trình thêm sản phẩm vào yêu thích: ${error.message}`);
+    }
+  }
+
+  async getFavoriteProducts(userId: string): Promise<IProduct[]> {
+    const favorites = await FavoriteProduct.find({ user: userId }).populate('product');
+    return favorites.map(fav => fav.product as IProduct);
   }
 }
 
